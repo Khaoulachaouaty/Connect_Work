@@ -10,14 +10,24 @@ class OnBoardingWidgetBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      height: 500,
       child: PageView.builder(
         controller: _controller,
         itemCount: 3,
         itemBuilder: (context, index) {
           return Column(
             children: [
-              Image.asset(Assets.imagesOnboarding1),
+              Container(
+                height: 290,
+                width: 343,
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(Assets.imagesOnboarding1),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               const SizedBox(height: 24),
               CustomerSmoothPageIndecator(controller: _controller),
               const SizedBox(height: 24),
@@ -25,12 +35,16 @@ class OnBoardingWidgetBody extends StatelessWidget {
                 "Connectez-vous avec votre équipe",
                 style: CustomTextStyles.onboarding, 
                 textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 24),
                Text(
                 "Restez informé et partagez des informations importantes avec vos collègues, où que vous soyez",
                 style: CustomTextStyles.onboarding2,
                 textAlign: TextAlign.center,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
               ),
               
             ],

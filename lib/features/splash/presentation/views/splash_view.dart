@@ -1,7 +1,5 @@
 import 'package:connect_work/core/utils/app_assets.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
 import '../../../../core/functions/navigation.dart';
 import '../../../../core/utils/app_colors.dart';
 import '../../../../core/utils/app_strings.dart';
@@ -64,6 +62,6 @@ class _SplashViewState extends State<SplashView> {
 
   void delayNavigation(context) {
     Future.delayed(const Duration(seconds: 2), () {
-      customNavigate(context,'/onboarding');
+      customReplacementNavigate(context,'/onboarding');
     });
   }
