@@ -1,6 +1,6 @@
+import 'package:connect_work/core/routes/app_router.dart';
 import 'package:flutter/material.dart';
 
-import 'views/splash.dart';
 
 
 void main() {
@@ -12,9 +12,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
-      home: Splash(),
+      routerConfig: router,
     );
   }
 }
+
