@@ -1,10 +1,19 @@
+import 'package:connect_work/core/functions/navigation.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/widgets/cutsom_btn.dart';
 import 'widgets/custom_nav_bar.dart';
+import 'widgets/get_buttons.dart';
 import 'widgets/on_boarding_widget_body.dart';
 
-class OnBoardingView extends StatelessWidget {
+class OnBoardingView extends StatefulWidget {
   const OnBoardingView({super.key});
+
+  @override
+  State<OnBoardingView> createState() => _OnBoardingViewState();
+}
+
+class _OnBoardingViewState extends State<OnBoardingView> {
+  final PageController _controller = PageController(initialPage: 0);
+  int currentIndex =0;
 
   @override
   Widget build(BuildContext context) {
@@ -15,11 +24,22 @@ class OnBoardingView extends StatelessWidget {
           child: ListView(
             children: [
               const SizedBox(height: 40),
-              CustomNavbar(),
+              CustomNavbar(onTap: () { 
+                customReplacementNavigate(context, "/login");
+               },),
               const SizedBox(height: 60),
-              OnBoardingWidgetBody(),
+              OnBoardingWidgetBody(
+                onPageChanged: (index) {
+                  setState(() {
+                    currentIndex = index;
+                  });
+                },
+                controller: _controller),
               const SizedBox(height: 100),
-              CustomBtn(text: "Suivant"),
+              GetButtons(
+                currentIndex: currentIndex,
+                controller: _controller,
+              ),
             ],
           ),
         ),
