@@ -41,4 +41,8 @@ abstract class AppColor {
   // Ombres
   static const Color shadow = Color(0x1A000000);
   static const Color shadowLight = Color(0x0D000000);
+
+  // Autres couleurs
+  static const Color white = Color(0xFFFFFFFF);
+  static const Color black = Color.fromARGB(255, 34, 32, 32);
 }
