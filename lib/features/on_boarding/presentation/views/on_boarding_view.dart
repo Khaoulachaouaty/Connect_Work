@@ -1,4 +1,5 @@
 import 'package:connect_work/core/functions/navigation.dart';
+import 'package:connect_work/features/on_boarding/presentation/views/functions/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'widgets/custom_nav_bar.dart';
 import 'widgets/get_buttons.dart';
@@ -24,8 +25,10 @@ class _OnBoardingViewState extends State<OnBoardingView> {
           child: ListView(
             children: [
               const SizedBox(height: 40),
-              CustomNavbar(onTap: () { 
-                customReplacementNavigate(context, "/login");
+              CustomNavbar(
+                onTap: () { 
+                  onBoardingVisited();
+                  customReplacementNavigate(context, "/login");
                },),
               const SizedBox(height: 60),
               OnBoardingWidgetBody(

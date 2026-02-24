@@ -1,11 +1,16 @@
+import 'package:connect_work/core/database/cache/cache_helper.dart';
 import 'package:connect_work/core/routes/app_router.dart';
+import 'package:connect_work/core/services/service_locator.dart';
 import 'package:flutter/material.dart';
 
 import 'core/utils/app_colors.dart';
 
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupServerLocator();
+  await getIt<CacheHelper>().init();
   runApp(const MyApp());
 }
 
