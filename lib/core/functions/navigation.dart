@@ -1,10 +1,11 @@
-  import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
-void customNavigate(context, String path) {
-    GoRouter.of(context).push(path);
-  }
+void customNavigate(BuildContext context, String path) {
+  context.push(path);
+}
 
-//bsh temshy splashscresn
-void customReplacementNavigate(context, String path) {
-    GoRouter.of(context).pushReplacement(path);
-  }
+// Pour remplacer la page actuelle (ex: Splash → Login)
+void customReplacementNavigate(BuildContext context, String path) {
+  context.go(path); 
+}

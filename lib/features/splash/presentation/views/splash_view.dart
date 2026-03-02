@@ -69,7 +69,7 @@ class _SplashViewState extends State<SplashView> {
 
   void delayNavigation(context, path) {
     Future.delayed(
-      const Duration(seconds: 2), () 
+      const Duration(seconds: 3), () 
       {
         customReplacementNavigate(context,path);
     });
