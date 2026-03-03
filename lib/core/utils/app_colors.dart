@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 abstract class AppColor {
   // Couleur principale (Primary) - Bleu ConnectWork
   static const Color primary = Color(0xFF2563EB);
-  static const Color primaryDark = Color(0xFF1D4ED8);
-  static const Color primaryLight = Color(0xFF3B82F6);
+  static const Color primaryDark = Color.fromARGB(255, 9, 80, 234);
+  static const Color primaryLight = Color.fromARGB(255, 39, 120, 252);
   
   // Couleurs de fond
   static const Color background = Color(0xFFFFFFFF);

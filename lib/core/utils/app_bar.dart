@@ -1,33 +1,35 @@
 import 'package:flutter/material.dart';
-
 import 'app_colors.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({
+class SliverCustomAppBar extends StatelessWidget {
+  const SliverCustomAppBar({
     super.key,
     required this.title,
     this.showSearch = true,
-    this.showNotifications = true,  // ← NOUVEAU
+    this.showNotifications = true,
     this.onSearchTap,
-    this.onNotificationsTap,         // ← NOUVEAU
+    this.onNotificationsTap,
     this.onMoreTap,
   });
 
   final String title;
   final bool showSearch;
-  final bool showNotifications;      // ← NOUVEAU
+  final bool showNotifications;
   final VoidCallback? onSearchTap;
-  final VoidCallback? onNotificationsTap;  // ← NOUVEAU
+  final VoidCallback? onNotificationsTap;
   final VoidCallback? onMoreTap;
 
   @override
-  Size get preferredSize => const Size.fromHeight(56);
-
-  @override
   Widget build(BuildContext context) {
-    return AppBar(
+    return SliverAppBar(
+      floating: true,
+      snap: true,
+      pinned: false,
       elevation: 0,
-      centerTitle: false,
+      backgroundColor: AppColor.white,
+      
+      // NE PAS mettre de SafeArea ici, géré automatiquement
+      automaticallyImplyLeading: false,
       title: Text(
         title,
         style: const TextStyle(
@@ -46,11 +48,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               size: 34,
             ),
           ),
-        if (showNotifications)  // ← NOUVEAU
+        if (showNotifications)
           IconButton(
             onPressed: onNotificationsTap,
             icon: const Icon(
-              Icons.notifications_none_outlined,  // ← Icône notification
+              Icons.notifications_none_outlined,
               color: AppColor.iconPrimary,
               size: 30,
             ),

@@ -21,6 +21,7 @@ class PostView extends StatelessWidget {
         likes: 24,
         comments: 8,
       ),
+      
       // Post avec vidéo
       Post(
         id: '2',
@@ -30,10 +31,11 @@ class PostView extends StatelessWidget {
         content: 'Nouveau design system disponible ! N\'hésitez pas à me faire vos retours 👇',
         timeAgo: 'Il y a 5h',
         mediaType: PostMediaType.video,
-        mediaUrl: 'https://example.com/video.mp4',
+        mediaUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
         likes: 42,
         comments: 12,
       ),
+      
       // Post avec PDF
       Post(
         id: '3',
@@ -43,30 +45,42 @@ class PostView extends StatelessWidget {
         content: 'Voici le rapport de projet du mois de mars. Bonne lecture à tous !',
         timeAgo: 'Hier',
         mediaType: PostMediaType.pdf,
-        mediaUrl: 'https://example.com/rapport.pdf',
+        mediaUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
         fileName: 'Rapport_Projet_Mars_2024.pdf',
         likes: 15,
         comments: 3,
       ),
+      
       // Post sans média
       Post(
         id: '4',
         authorName: 'Sophie Martin',
         authorRole: 'RH Manager',
         authorAvatar: 'https://i.pravatar.cc/150?img=9',
-        content: 'Bienvenue à nos nouveaux collaborateurs qui rejoignent l\'équipe cette semaine ! 🎉',
+        content: 'Bienvenue à nos nouveaux collaborateurs qui rejoignent l\'équipe cette semaine ! 🎉 Nous sommes ravis de vous accueillir.',
         timeAgo: 'Il y a 2j',
         mediaType: PostMediaType.none,
         likes: 89,
         comments: 24,
       ),
+      
+      // Post avec image
+      Post(
+        id: '5',
+        authorName: 'Lucas Bernard',
+        authorRole: 'Développeur Mobile',
+        authorAvatar: 'https://i.pravatar.cc/150?img=12',
+        content: 'Flutter 3.19 est sorti ! Tellement hâte de tester les nouvelles fonctionnalités 🔥',
+        timeAgo: 'Il y a 3j',
+        mediaType: PostMediaType.image,
+        mediaUrl: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600',
+        likes: 156,
+        comments: 45,
+      ),
     ];
 
-    return ListView.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index) {
-        return PostCard(post: posts[index]);
-      },
+    return Column(
+      children: posts.map((post) => PostCard(post: post)).toList(),
     );
   }
 }
