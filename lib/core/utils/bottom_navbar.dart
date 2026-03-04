@@ -1,5 +1,6 @@
-import 'package:connect_work/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+
+import 'package:connect_work/core/utils/app_colors.dart';
 
 import '../functions/navigation.dart';
 

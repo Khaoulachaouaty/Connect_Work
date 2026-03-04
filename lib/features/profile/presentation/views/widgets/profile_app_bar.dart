@@ -9,12 +9,11 @@ class ProfileAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
-      expandedHeight: 100, // Augmenté pour plus d'espace
+      expandedHeight: 120,
       pinned: true,
       floating: false,
       elevation: 0,
       backgroundColor: AppColor.primary,
-      automaticallyImplyLeading: false, // Pas de flèche retour
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           color: AppColor.primary,
@@ -22,7 +21,7 @@ class ProfileAppBar extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 16, bottom: 60), // Ajusté
+          padding: const EdgeInsets.only(right: 16, top: 40),
           child: GestureDetector(
             onTap: onEditTap,
             child: Container(

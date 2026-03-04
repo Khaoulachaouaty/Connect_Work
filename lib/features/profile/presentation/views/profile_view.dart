@@ -10,21 +10,21 @@ class ProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       body: CustomScrollView(
         slivers: [
           ProfileAppBar(
             onEditTap: () {},
           ),
-          SliverList(
-            delegate: SliverChildListDelegate([
-              const ProfileHeader(),
-              const SizedBox(height: 20),
-              const ProfileStats(),
-              const SizedBox(height: 24),
-              ProfileRecentPosts(),
-              const SizedBox(height: 20),
-            ]),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                const ProfileHeader(),
+                const SizedBox(height: 20),
+                const ProfileStats(),
+                const SizedBox(height: 24),
+                ProfileRecentPosts(),
+              ],
+            ),
           ),
         ],
       ),
