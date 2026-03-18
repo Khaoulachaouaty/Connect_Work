@@ -1,4 +1,5 @@
 import 'package:connect_work/features/auth/presentation/views/login_view.dart';
+import 'package:connect_work/features/auth/presentation/views/reset_password_view.dart';
 import 'package:connect_work/features/home/presentation/views/home_view.dart';
 import 'package:connect_work/features/messages/presentations/views/messagesview.dart';
 import 'package:connect_work/features/on_boarding/presentation/views/on_boarding_view.dart';
@@ -20,6 +21,10 @@ final GoRouter router = GoRouter(routes: [
   GoRoute(
     path: "/login",
     builder: (context, state) => const LoginView(),
+  ),
+  GoRoute(
+    path: "/reset-password",
+    builder: (context, state) => const ResetPasswordView(),
   ),
   GoRoute(
     path: "/onboarding",

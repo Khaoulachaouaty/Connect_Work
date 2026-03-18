@@ -4,7 +4,14 @@ import '../../../../../core/functions/navigation.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class LoginButton extends StatelessWidget {
-  const LoginButton({super.key});
+  const LoginButton({
+    super.key,
+    required this.onPressed,
+    this.isLoading = false,
+  });
+
+  final VoidCallback onPressed;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +19,7 @@ class LoginButton extends StatelessWidget {
       width: double.infinity,
       height: 55,
       child: ElevatedButton(
-        onPressed: () {
-          customReplacementNavigate(context, "/home");
-        },
+        onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColor.primary,
           shape: RoundedRectangleBorder(
@@ -22,14 +27,18 @@ class LoginButton extends StatelessWidget {
           ),
           elevation: 8,
         ),
-        child: const Text(
-          "Se connecter",
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColor.white,
-          ),
-        ),
+        child: isLoading
+            ? const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppColor.white),
+              )
+            : const Text(
+                "Se connecter",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppColor.white,
+                ),
+              ),
       ),
     );
   }

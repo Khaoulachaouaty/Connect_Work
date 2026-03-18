@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import '../../../../../core/functions/navigation.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class ForgetPassword extends StatelessWidget {
@@ -8,7 +8,9 @@ class ForgetPassword extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextButton(
-      onPressed: () {},
+      onPressed: () {
+        customReplacementNavigate(context, '/reset-password');
+      },
       child: const Text(
         "Mot de passe oublié ?",
         style: TextStyle(
