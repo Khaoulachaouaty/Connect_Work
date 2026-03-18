@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "131172754257",
+    "project_id": "connectwork-584e6",
+    "storage_bucket": "connectwork-584e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:131172754257:android:a29ac1d821cef2a8aea970",
+        "android_client_info": {
+          "package_name": "com.example.connect_work"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3asqjPk1tRQ7l6-UJ9I6vQ-m5S7k5Sb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

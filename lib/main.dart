@@ -1,13 +1,19 @@
 import 'package:connect_work/core/database/cache/cache_helper.dart';
 import 'package:connect_work/core/routes/app_router.dart';
 import 'package:connect_work/core/services/service_locator.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'core/utils/app_colors.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   
   // Imposer la status bar blanche globalement
   SystemChrome.setSystemUIOverlayStyle(
