@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class ProfileStats extends StatelessWidget {
-  const ProfileStats({super.key});
+  final int publications;
+  final int likes;
+  final int groups;
+
+  const ProfileStats({
+    super.key,
+    this.publications = 0,
+    this.likes = 0,
+    this.groups = 0,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -10,16 +19,16 @@ class ProfileStats extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.symmetric(vertical: 20),
       decoration: BoxDecoration(
-        color: Colors.white, // Fond blanc au lieu de gris
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: AppColor.inputBackground),
       ),
-      child: const Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _StatItem(number: '24', label: 'Publications'),
-          _StatItem(number: '156', label: 'Likes reçus'),
-          _StatItem(number: '3', label: 'Groupes'),
+          _StatItem(number: publications.toString(), label: 'Publications'),
+          _StatItem(number: likes.toString(), label: 'Likes reçus'),
+          _StatItem(number: groups.toString(), label: 'Groupes'),
         ],
       ),
     );

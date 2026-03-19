@@ -2,7 +2,9 @@ import 'package:connect_work/features/posts/data/models/post_media.dart';
 import 'package:flutter/material.dart';
 
 class PostActions extends StatelessWidget {
-  const PostActions({super.key, required Post post});
+  const PostActions({super.key, required this.post});
+
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -10,18 +12,20 @@ class PostActions extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: [
-          // Like
           _ActionButton(
             icon: Icons.favorite_outline,
-            count: '24',
-            onTap: () {},
+            count: post.likes.toString(),
+            onTap: () {
+              // TODO: call postService.likePost(post.id);
+            },
           ),
           const SizedBox(width: 24),
-          // Commentaires
           _ActionButton(
             icon: Icons.chat_bubble_outline,
-            count: '8',
-            onTap: () {},
+            count: post.comments.toString(),
+            onTap: () {
+              // TODO: open comments
+            },
           ),
         ],
       ),

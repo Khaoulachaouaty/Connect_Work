@@ -1,31 +1,54 @@
 import 'package:flutter/material.dart';
+import '../../../../../auth/data/models/user_model.dart';
 
-class EditProfileForm extends StatelessWidget {
-  final _nameController = TextEditingController(text: 'Sarah Martinez');
-  final _roleController = TextEditingController(text: 'Product Manager');
-  final _departmentController = TextEditingController(text: 'Product Management');
-  final _bioController = TextEditingController();
+class EditProfileForm extends StatefulWidget {
+  final UserModel user;
 
-  EditProfileForm({super.key});
+  const EditProfileForm({super.key, required this.user});
+
+  @override
+  State<EditProfileForm> createState() => _EditProfileFormState();
+}
+
+class _EditProfileFormState extends State<EditProfileForm> {
+  late final TextEditingController _nameController;
+  late final TextEditingController _functionController;
+  late final TextEditingController _departmentController;
+  late final TextEditingController _bioController;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController(text: widget.user.name);
+    _functionController = TextEditingController(
+      text: widget.user.function ?? '',
+    );
+    _departmentController = TextEditingController(text: '');
+    _bioController = TextEditingController(text: widget.user.bio ?? '');
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _functionController.dispose();
+    _departmentController.dispose();
+    _bioController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildField(
-          label: 'Nom complet',
-          controller: _nameController,
-        ),
+        _buildField(label: 'Nom complet', controller: _nameController),
         const SizedBox(height: 16),
-        _buildField(
-          label: 'Fonction',
-          controller: _roleController,
-        ),
+        _buildField(label: 'Fonction', controller: _functionController),
         const SizedBox(height: 16),
         _buildField(
           label: 'Département',
           controller: _departmentController,
+          hintText: 'ex: Marketing, IT, RH...',
         ),
         const SizedBox(height: 16),
         _buildField(

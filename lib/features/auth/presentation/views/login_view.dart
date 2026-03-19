@@ -17,10 +17,19 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  //final TextEditingController _emailController = TextEditingController();
+  //final TextEditingController _passwordController = TextEditingController();
   bool _loginPressed = false;
   String? _alertMessage;
+
+  // Déclaration des controllers avec valeurs par défaut pour tester
+  final TextEditingController _emailController = TextEditingController(
+    text: 'employe@entreprise.com', // email pré-rempli
+  );
+
+  final TextEditingController _passwordController = TextEditingController(
+    text: 'azerty', // mot de passe pré-rempli
+  );
 
   @override
   void dispose() {
@@ -90,11 +99,13 @@ class _LoginViewState extends State<LoginView> {
                     child: CustomTextField(
                       controller: _emailController,
                       hintText: "nom@entreprise.com",
-                      icon: Icons.email_outlined,
+
+                      icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 20)),
+                
 
                 const SliverToBoxAdapter(child: _SectionLabel(text: "Mot de passe")),
                 const SliverToBoxAdapter(child: SizedBox(height: 8)),
@@ -104,7 +115,7 @@ class _LoginViewState extends State<LoginView> {
                       controller: _passwordController,
                       hintText: "••••••••",
                       icon: Icons.lock_outlined,
-                      obscureText: true,
+                      obscureText: true, keyboardType: TextInputType.text,
                     ),
                   ),
                 ),
@@ -149,7 +160,7 @@ class _LoginViewState extends State<LoginView> {
                     padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [const Color.fromARGB(255, 240, 137, 137), const Color.fromARGB(255, 247, 87, 87)],
+                        colors: [const Color.fromARGB(255, 179, 141, 148), const Color.fromARGB(255, 247, 87, 87)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),

@@ -3,7 +3,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../../core/utils/app_colors.dart';
 
 class CreatePostAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CreatePostAppBar({super.key});
+  final VoidCallback onPublish;
+
+  const CreatePostAppBar({super.key, required this.onPublish});
 
   @override
   Size get preferredSize => const Size.fromHeight(56);
@@ -28,9 +30,7 @@ class CreatePostAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       actions: [
         TextButton(
-          onPressed: () {
-            // Logique publier
-          },
+          onPressed: onPublish,
           child: Text(
             'Publier',
             style: TextStyle(

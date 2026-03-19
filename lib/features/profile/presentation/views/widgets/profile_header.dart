@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
+import '../../../../auth/data/models/user_model.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  final UserModel user;
+
+  const ProfileHeader({super.key, required this.user});
 
   @override
   Widget build(BuildContext context) {
+    const monthNames = [
+      'janvier',
+      'février',
+      'mars',
+      'avril',
+      'mai',
+      'juin',
+      'juillet',
+      'août',
+      'septembre',
+      'octobre',
+      'novembre',
+      'décembre',
+    ];
+    final memberSince = '${monthNames[user.createdAt.month - 1]} ${user.createdAt.year}';
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -13,30 +31,33 @@ class ProfileHeader extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Content without avatar (avatar is now positioned in Stack)
-          const Text(
-            'Sarah Martinez',
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          Text(
+            user.name,
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
-            'Product Manager',
-            style: TextStyle(fontSize: 14, color: AppColor.textSecondary),
+            user.function ?? 'Fonction non renseignée',
+            style: const TextStyle(fontSize: 14, color: AppColor.textSecondary),
           ),
           const SizedBox(height: 12),
           Text(
-            'Passionate about building great products and leading amazing teams.',
-            style: TextStyle(
+            user.bio ?? 'Aucune biographie disponible.',
+            style: const TextStyle(
               fontSize: 14,
               color: AppColor.textSecondary,
               height: 1.4,
             ),
           ),
           const SizedBox(height: 16),
-          _buildInfoItem(Icons.email_outlined, 'sarah.martinez@company.com'),
-          _buildInfoItem(Icons.location_on_outlined, 'Product Management'),
+          _buildInfoItem(Icons.email_outlined, user.email),
+          _buildInfoItem(
+            Icons.location_on_outlined,
+            user.function ?? 'Non défini',
+          ),
           _buildInfoItem(
             Icons.calendar_today_outlined,
-            'Membre depuis janvier 2024',
+            'Membre depuis $memberSince',
           ),
         ],
       ),
