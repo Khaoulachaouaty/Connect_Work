@@ -1,4 +1,9 @@
+import 'package:connect_work/core/utils/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../data/models/group_modele.dart';
 import 'widgets/details/group_app_bar.dart';
 import 'widgets/details/group_files_tab.dart';
@@ -19,11 +24,14 @@ class GroupDetailView extends StatefulWidget {
 class _GroupDetailViewState extends State<GroupDetailView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  bool _isAdmin = false;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    final authState = context.read<AuthCubit>().state;
+    _isAdmin = authState is AuthAuthenticated && authState.user.role == 'admin';
+    _tabController = TabController(length: _isAdmin ? 4 : 3, vsync: this);
   }
 
   @override
@@ -35,23 +43,115 @@ class _GroupDetailViewState extends State<GroupDetailView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
-            GroupAppBar(imageUrl: widget.group.imageUrl),
+            GroupAppBar(
+              imageUrl: widget.group.imageUrl,
+              groupId: widget.group.id,
+              groupName: widget.group.name,
+              isMember: widget.group.isMember,
+            ),
             GroupInfo(group: widget.group),
-            GroupTabs(controller: _tabController),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _PersistentTabBarDelegate(
+                TabBar(
+                  controller: _tabController,
+                  indicatorColor: AppColor.primary,
+                  labelColor: AppColor.primary,
+                  unselectedLabelColor: Colors.grey,
+                  labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  tabs: [
+                    const Tab(text: 'Publications'),
+                    const Tab(text: 'Membres'),
+                    const Tab(text: 'Fichiers'),
+                    if (_isAdmin) const Tab(text: 'Demandes'),
+                  ],
+                ),
+              ),
+            ),
           ];
         },
         body: TabBarView(
           controller: _tabController,
-          children: const [
-            GroupPublicationsTab(),
-            GroupMembersTab(),
-            GroupFilesTab(),
+          children: [
+            GroupPublicationsTab(groupId: widget.group.id),
+            GroupMembersTab(groupId: widget.group.id),
+            GroupFilesTab(groupId: widget.group.id),
+            if (_isAdmin) _PendingRequestsTab(group: widget.group),
           ],
         ),
       ),
+      floatingActionButton: widget.group.isMember ? FloatingActionButton(
+        onPressed: () => context.push('/create-post', extra: widget.group),
+        backgroundColor: AppColor.primary,
+        child: const Icon(Icons.edit_note_rounded, color: Colors.white),
+      ) : null,
     );
   }
+}
+
+class _PendingRequestsTab extends StatelessWidget {
+  final Group group;
+  const _PendingRequestsTab({required this.group});
+
+  @override
+  Widget build(BuildContext context) {
+    if (group.pendingMembers.isEmpty) {
+      return const Center(child: Text('Aucune demande en attente.'));
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: group.pendingMembers.length,
+      itemBuilder: (context, index) {
+        final memberId = group.pendingMembers[index];
+        return Card(
+          margin: const EdgeInsets.only(bottom: 12),
+          child: ListTile(
+            leading: const CircleAvatar(child: Icon(Icons.person)),
+            title: Text('Utilisateur ID: $memberId'), // Should fetch real name
+            subtitle: const Text('Souhaite rejoindre le groupe'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.check_circle, color: Colors.green),
+                  onPressed: () {
+                    // Accept logic
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.cancel, color: Colors.red),
+                  onPressed: () {
+                    // Reject logic
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PersistentTabBarDelegate extends SliverPersistentHeaderDelegate {
+  final TabBar tabBar;
+  _PersistentTabBarDelegate(this.tabBar);
+
+  @override
+  double get minExtent => tabBar.preferredSize.height;
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(color: Colors.white, child: tabBar);
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => false;
 }

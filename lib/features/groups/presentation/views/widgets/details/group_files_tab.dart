@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GroupFilesTab extends StatelessWidget {
-  const GroupFilesTab({super.key});
+  final String groupId;
+  const GroupFilesTab({super.key, required this.groupId});
 
   @override
   Widget build(BuildContext context) {

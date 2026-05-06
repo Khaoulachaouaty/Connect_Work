@@ -1,3 +1,4 @@
+// lib/auth/presentation/cubit/auth_state.dart
 import '../../data/models/user_model.dart';
 
 abstract class AuthState {}

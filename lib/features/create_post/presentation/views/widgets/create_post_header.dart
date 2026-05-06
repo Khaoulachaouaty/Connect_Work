@@ -10,17 +10,28 @@ class CreatePostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final name = user?.name ?? 'Utilisateur inconnu';
-    final fonction = user?.function ?? 'Fonction inconnue';
-    final avatarUrl = user?.photoUrl?.isNotEmpty == true
-        ? user!.photoUrl!
-        : 'https://i.pravatar.cc/150?img=5';
+    final name = user?.fullName ?? 'Utilisateur';
+    final fonction = user?.function ?? (user?.role ?? 'Membre');
+    final avatarUrl = user?.photoUrl;
 
     return Row(
       children: [
         CircleAvatar(
           radius: 24,
-          backgroundImage: NetworkImage(avatarUrl),
+          backgroundColor: AppColor.primary.withOpacity(0.1),
+          backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
+              ? NetworkImage(avatarUrl)
+              : null,
+          child: avatarUrl == null || avatarUrl.isEmpty
+              ? Text(
+                  name.isNotEmpty ? name[0].toUpperCase() : 'U',
+                  style: const TextStyle(
+                    color: AppColor.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                )
+              : null,
         ),
         const SizedBox(width: 12),
         Column(

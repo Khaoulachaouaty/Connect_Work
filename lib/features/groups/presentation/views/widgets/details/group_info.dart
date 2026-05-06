@@ -11,23 +11,79 @@ class GroupInfo extends StatelessWidget {
     return SliverToBoxAdapter(
       child: Container(
         color: Colors.white,
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    group.name,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                      color: Color(0xFF1F2937),
+                    ),
+                  ),
+                ),
+                _buildPrivacyBadge(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            _buildMemberCount(),
+            const SizedBox(height: 20),
             Text(
-              group.name,
-              style: const TextStyle(
-                fontSize: 24,
+              'À propos de ce groupe',
+              style: TextStyle(
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.grey.shade800,
               ),
             ),
             const SizedBox(height: 8),
-            _buildMemberCount(),
-            const SizedBox(height: 12),
-            _buildDescription(),
+            Text(
+              group.description.isNotEmpty 
+                ? group.description 
+                : 'Aucune description disponible pour ce groupe.',
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 15,
+                height: 1.5,
+              ),
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildPrivacyBadge() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: group.isPrivate ? Colors.orange.shade50 : Colors.green.shade50,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            group.isPrivate ? Icons.lock_rounded : Icons.public_rounded,
+            size: 14,
+            color: group.isPrivate ? Colors.orange.shade700 : Colors.green.shade700,
+          ),
+          const SizedBox(width: 4),
+          Text(
+            group.isPrivate ? 'Privé' : 'Public',
+            style: TextStyle(
+              color: group.isPrivate ? Colors.orange.shade700 : Colors.green.shade700,
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -35,31 +91,30 @@ class GroupInfo extends StatelessWidget {
   Widget _buildMemberCount() {
     return Row(
       children: [
-        Icon(
-          Icons.people_outline,
-          size: 18,
-          color: Colors.grey.shade600,
+        Stack(
+          children: List.generate(3, (index) => Padding(
+            padding: EdgeInsets.only(left: index * 16.0),
+            child: CircleAvatar(
+              radius: 12,
+              backgroundColor: Colors.white,
+              child: CircleAvatar(
+                radius: 10,
+                backgroundColor: Colors.blue.shade100,
+                child: const Icon(Icons.person, size: 12, color: Colors.blue),
+              ),
+            ),
+          )),
         ),
-        const SizedBox(width: 6),
+        const SizedBox(width: 12),
         Text(
           '${group.memberCount} membres',
           style: TextStyle(
-            color: Colors.grey.shade600,
+            color: Colors.grey.shade500,
             fontSize: 14,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildDescription() {
-    return Text(
-      'Discussions techniques et partage de connaissances entre développeurs',
-      style: TextStyle(
-        color: Colors.grey.shade700,
-        fontSize: 14,
-        height: 1.4,
-      ),
     );
   }
 }

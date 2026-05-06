@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class GroupMembersTab extends StatelessWidget {
-  const GroupMembersTab({super.key});
+  final String groupId;
+  const GroupMembersTab({super.key, required this.groupId});
 
   @override
   Widget build(BuildContext context) {

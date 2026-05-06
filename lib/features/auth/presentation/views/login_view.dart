@@ -1,8 +1,12 @@
+// lib/auth/presentation/views/login_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../data/models/user_model.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
+import 'widgets/alert_message.dart';
 import 'widgets/forget_passowrd.dart';
 import 'widgets/login_button.dart';
 import 'widgets/login_footer_text.dart';
@@ -17,19 +21,10 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  //final TextEditingController _emailController = TextEditingController();
-  //final TextEditingController _passwordController = TextEditingController();
-  bool _loginPressed = false;
-  String? _alertMessage;
-
-  // Déclaration des controllers avec valeurs par défaut pour tester
-  final TextEditingController _emailController = TextEditingController(
-    text: 'employe@entreprise.com', // email pré-rempli
-  );
-
-  final TextEditingController _passwordController = TextEditingController(
-    text: 'azerty', // mot de passe pré-rempli
-  );
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _isLoginAttempt = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -38,49 +33,47 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  void _setAlert(String message) {
-    setState(() {
-      _alertMessage = message;
-    });
-  }
-
-  void _clearAlert() {
-    setState(() {
-      _alertMessage = null;
-    });
-  }
-
-  void _login() {
+  void _handleLogin() {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
+
     if (email.isEmpty || password.isEmpty) {
-      _setAlert('Veuillez renseigner l\'email et le mot de passe.');
+      setState(() => _errorMessage = 'Veuillez renseigner email et mot de passe');
       return;
     }
-    _clearAlert();
-    _loginPressed = true;
+
+    if (!email.contains('@') || !email.contains('.')) {
+      setState(() => _errorMessage = 'Email invalide');
+      return;
+    }
+
+    setState(() {
+      _errorMessage = null;
+      _isLoginAttempt = true;
+    });
+
     context.read<AuthCubit>().signIn(email, password);
+  }
+
+  void _navigateBasedOnRole(UserModel user) {
+    if (user.role == 'admin') {
+      context.go('/admin');
+    } else {
+      context.go('/home');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state is AuthAuthenticated) {
-          if (!_loginPressed) {
-            // Ignore le flux d'état initial sur la page de connexion (login non encore cliquant)
-            return;
-          }
-          if (state.user.role == 'employee') {
-            context.go('/home');
-          } else {
-            _setAlert('Accès réservé aux employés uniquement.');
-            context.read<AuthCubit>().signOut();
-            context.go('/login');
-          }
+        if (state is AuthAuthenticated && _isLoginAttempt) {
+          _navigateBasedOnRole(state.user);
         } else if (state is AuthError) {
-          _setAlert(state.message);
-          _loginPressed = false;
+          setState(() {
+            _errorMessage = state.message;
+            _isLoginAttempt = false;
+          });
         }
       },
       child: Scaffold(
@@ -88,10 +81,10 @@ class _LoginViewState extends State<LoginView> {
           children: [
             CustomScrollView(
               slivers: [
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                const SliverToBoxAdapter(child: SizedBox(height: 60)),
                 const SliverToBoxAdapter(child: LoginHeaderWidget()),
                 const SliverToBoxAdapter(child: SizedBox(height: 40)),
-
+                
                 const SliverToBoxAdapter(child: _SectionLabel(text: "Email")),
                 const SliverToBoxAdapter(child: SizedBox(height: 8)),
                 SliverToBoxAdapter(
@@ -99,14 +92,13 @@ class _LoginViewState extends State<LoginView> {
                     child: CustomTextField(
                       controller: _emailController,
                       hintText: "nom@entreprise.com",
-
-                      icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress,
+                      icon: Icons.email_outlined,
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 20)),
                 
-
                 const SliverToBoxAdapter(child: _SectionLabel(text: "Mot de passe")),
                 const SliverToBoxAdapter(child: SizedBox(height: 8)),
                 SliverToBoxAdapter(
@@ -115,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                       controller: _passwordController,
                       hintText: "••••••••",
                       icon: Icons.lock_outlined,
-                      obscureText: true, keyboardType: TextInputType.text,
+                      obscureText: true,
                     ),
                   ),
                 ),
@@ -128,74 +120,35 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                const SliverToBoxAdapter(child: SizedBox(height: 8)),
-
+                const SliverToBoxAdapter(child: SizedBox(height: 24)),
+                
                 SliverToBoxAdapter(
                   child: _SectionPadding(
                     child: BlocBuilder<AuthCubit, AuthState>(
                       builder: (context, state) {
                         return LoginButton(
-                          onPressed: _login,
+                          onPressed: _handleLogin,
                           isLoading: state is AuthLoading,
                         );
                       },
                     ),
                   ),
                 ),
-
-                const SliverToBoxAdapter(child: SizedBox(height: 120)),
+                
+                const SliverToBoxAdapter(child: SizedBox(height: 60)),
                 const SliverToBoxAdapter(child: LoginFooterText()),
+                const SliverToBoxAdapter(child: SizedBox(height: 20)),
               ],
             ),
-
-            if (_alertMessage != null)
+            
+            if (_errorMessage != null)
               Positioned(
                 left: 16,
                 right: 16,
-                bottom: 120,
-                child: Material(
-                  elevation: 12,
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 16),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [const Color.fromARGB(255, 179, 141, 148), const Color.fromARGB(255, 247, 87, 87)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.2),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(Icons.warning_amber_rounded, color: Colors.white, size: 26),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            _alertMessage!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.close),
-                          color: Colors.white,
-                          onPressed: _clearAlert,
-                        ),
-                      ],
-                    ),
-                  ),
+                bottom: 30,
+                child: AlertMessageWidget(
+                  message: _errorMessage!,
+                  onDismiss: () => setState(() => _errorMessage = null),
                 ),
               ),
           ],
@@ -207,34 +160,21 @@ class _LoginViewState extends State<LoginView> {
 
 class _SectionPadding extends StatelessWidget {
   const _SectionPadding({required this.child});
-
   final Widget child;
-
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: child,
-    );
+    return Padding(padding: const EdgeInsets.symmetric(horizontal: 24), child: child);
   }
 }
 
 class _SectionLabel extends StatelessWidget {
   const _SectionLabel({required this.text});
-
   final String text;
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
+      child: Text(text, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
     );
   }
 }

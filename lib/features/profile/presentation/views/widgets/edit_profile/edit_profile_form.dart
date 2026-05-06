@@ -19,7 +19,7 @@ class _EditProfileFormState extends State<EditProfileForm> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.user.name);
+    _nameController = TextEditingController(text: widget.user.fullName);
     _functionController = TextEditingController(
       text: widget.user.function ?? '',
     );

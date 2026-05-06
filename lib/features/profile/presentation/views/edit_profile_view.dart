@@ -23,7 +23,7 @@ class EditProfileView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  const EditProfileAvatar(),
+                  EditProfileAvatar(user: state.user),
                   const SizedBox(height: 24),
                   EditProfileForm(user: state.user),
                 ],

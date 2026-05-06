@@ -107,25 +107,24 @@ class _CreatePostActionsState extends State<CreatePostActions> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         _ActionButton(
-          icon: Icons.image_outlined,
+          icon: Icons.image_rounded,
           label: 'Photo',
-          color: AppColor.primaryLight,
+          color: Colors.green.shade600,
           onTap: _pickImage,
         ),
-        const SizedBox(width: 24),
         _ActionButton(
-          icon: Icons.videocam_outlined,
+          icon: Icons.videocam_rounded,
           label: 'Vidéo',
-          color: AppColor.accentError,
+          color: Colors.red.shade600,
           onTap: _pickVideo,
         ),
-        const SizedBox(width: 24),
         _ActionButton(
-          icon: Icons.insert_drive_file_outlined,
+          icon: Icons.description_rounded,
           label: 'Fichier',
-          color: AppColor.accentSuccess,
+          color: Colors.blue.shade600,
           onTap: _pickFile,
         ),
       ],
@@ -148,20 +147,30 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, color: color, size: 24),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w500,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(height: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: color.withOpacity(0.8),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

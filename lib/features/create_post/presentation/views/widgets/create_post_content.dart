@@ -12,15 +12,21 @@ class CreatePostContent extends StatelessWidget {
     return TextField(
       controller: controller,
       maxLines: null,
-      minLines: 5,
+      minLines: 8,
+      style: const TextStyle(
+        fontSize: 18,
+        color: AppColor.textPrimary,
+        height: 1.5,
+      ),
       decoration: InputDecoration(
-        hintText: 'Quoi de neuf ?',
+        hintText: 'Partagez vos idées ou vos succès...',
         hintStyle: TextStyle(
-          color: AppColor.textHint,
-          fontSize: 16,
+          color: AppColor.textHint.withOpacity(0.6),
+          fontSize: 18,
+          fontStyle: FontStyle.italic,
         ),
         border: InputBorder.none,
-        contentPadding: EdgeInsets.zero,
+        contentPadding: const EdgeInsets.symmetric(vertical: 12),
       ),
     );
   }

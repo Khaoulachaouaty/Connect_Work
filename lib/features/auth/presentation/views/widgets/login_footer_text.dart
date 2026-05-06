@@ -1,3 +1,4 @@
+// lib/auth/presentation/views/widgets/login_footer_text.dart
 import 'package:flutter/material.dart';
 
 class LoginFooterText extends StatelessWidget {
@@ -5,15 +6,18 @@ class LoginFooterText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 44),
-      child: Center(
-        child: Text(
-          "En vous connectant, vous acceptez nos conditions d'utilisation",
-          textAlign: TextAlign.center,
+    return Column(
+      children: [
+        const Text(
+          'Application interne',
           style: TextStyle(color: Colors.grey),
         ),
-      ),
+        const SizedBox(height: 4),
+        Text(
+          '© 2026 - Tous droits réservés',
+          style: TextStyle(color: Colors.grey.shade400, fontSize: 12),
+        ),
+      ],
     );
   }
 }

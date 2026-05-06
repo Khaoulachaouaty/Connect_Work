@@ -13,8 +13,10 @@ class Post {
   final PostMediaType mediaType;
   final String? mediaUrl;
   final String? fileName;
-  final int likes;
+  final List<String> likedBy;
   final int comments;
+  final String? groupId;
+  final String? groupName;
 
   Post({
     required this.id,
@@ -27,9 +29,13 @@ class Post {
     this.mediaType = PostMediaType.none,
     this.mediaUrl,
     this.fileName,
-    this.likes = 0,
+    this.likedBy = const [],
     this.comments = 0,
+    this.groupId,
+    this.groupName,
   });
+
+  int get likesCount => likedBy.length;
 
   factory Post.fromFirestore(Map<String, dynamic> data, String id) {
     final mediaTypeString = data['mediaType'] as String? ?? 'none';
@@ -47,8 +53,10 @@ class Post {
       ),
       mediaUrl: data['mediaUrl'] as String?,
       fileName: data['fileName'] as String?,
-      likes: (data['likes'] as int?) ?? 0,
-      comments: (data['comments'] as int?) ?? 0,
+      likedBy: List<String>.from(data['likedBy'] ?? []),
+      comments: (data['comments'] as num?)?.toInt() ?? 0,
+      groupId: data['groupId'] as String?,
+      groupName: data['groupName'] as String?,
     );
   }
 
@@ -63,9 +71,10 @@ class Post {
       'mediaType': mediaType.toString().split('.').last,
       'mediaUrl': mediaUrl,
       'fileName': fileName,
-      'likes': likes,
+      'likedBy': likedBy,
       'comments': comments,
+      'groupId': groupId,
+      'groupName': groupName,
     };
   }
-
 }

@@ -14,8 +14,18 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      color: Colors.white,
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,8 +33,8 @@ class PostCard extends StatelessWidget {
           PostContent(content: post.content),
           if (post.mediaType != PostMediaType.none)
             PostMedia(post: post),
+          const Divider(height: 1, color: Color(0xFFF5F5F5)),
           PostActions(post: post),
-          const SizedBox(height: 12),
         ],
       ),
     );
