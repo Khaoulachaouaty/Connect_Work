@@ -6,6 +6,9 @@ import '../../../data/models/group_model.dart';
 import '../../cubit/group_cubit.dart';
 
 
+import 'add_member_bottom_sheet.dart';
+import 'member_list_view.dart';
+
 class GroupMemberDialog extends StatefulWidget {
   final GroupModel group;
 
@@ -16,8 +19,6 @@ class GroupMemberDialog extends StatefulWidget {
 }
 
 class _GroupMemberDialogState extends State<GroupMemberDialog> {
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
   List<Map<String, dynamic>> _availableUsers = [];
 
   @override
@@ -27,7 +28,6 @@ class _GroupMemberDialogState extends State<GroupMemberDialog> {
   }
 
   Future<void> _loadAvailableUsers() async {
-    // Récupérer les utilisateurs depuis Firestore
     final usersSnapshot = await FirebaseFirestore.instance.collection('users').get();
     _availableUsers = usersSnapshot.docs
         .where((doc) => !widget.group.members.contains(doc.id))
@@ -37,15 +37,7 @@ class _GroupMemberDialogState extends State<GroupMemberDialog> {
           'email': doc['email'],
         })
         .toList();
-    setState(() {});
-  }
-
-  List<Map<String, dynamic>> _getFilteredUsers() {
-    if (_searchQuery.isEmpty) return _availableUsers;
-    return _availableUsers.where((user) =>
-      user['name'].toString().toLowerCase().contains(_searchQuery.toLowerCase()) ||
-      user['email'].toString().toLowerCase().contains(_searchQuery.toLowerCase())
-    ).toList();
+    if (mounted) setState(() {});
   }
 
   @override
@@ -85,66 +77,17 @@ class _GroupMemberDialogState extends State<GroupMemberDialog> {
               ],
             ),
             const SizedBox(height: 16),
-            // Liste des membres
             Expanded(
-              child: ListView.builder(
+              child: MemberListView(
+                group: widget.group,
                 controller: controller,
-                itemCount: widget.group.members.length,
-                itemBuilder: (context, index) {
-                  final memberId = widget.group.members[index];
-                  return FutureBuilder(
-                    future: _getUserInfo(memberId),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) {
-                        return const ListTile(
-                          leading: CircleAvatar(child: Icon(Icons.person)),
-                          title: Text('Chargement...'),
-                        );
-                      }
-                      final user = snapshot.data!;
-                      final isCreator = memberId == widget.group.createdBy;
-                      return ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: Colors.blue.shade100,
-                          child: Text(
-                            user['name'][0].toUpperCase(),
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        title: Text(user['name']),
-                        subtitle: Text(user['email']),
-                        trailing: isCreator
-                            ? Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.amber.shade100,
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: const Text('Créateur', style: TextStyle(fontSize: 10)),
-                              )
-                            : IconButton(
-                                icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
-                                onPressed: () => _removeMember(memberId),
-                                tooltip: 'Retirer',
-                              ),
-                      );
-                    },
-                  );
-                },
+                onRemoveMember: _removeMember,
               ),
             ),
           ],
         ),
       ),
     );
-  }
-
-  Future<Map<String, dynamic>> _getUserInfo(String userId) async {
-    final doc = await FirebaseFirestore.instance.collection('users').doc(userId).get();
-    return {
-      'name': doc['fullName'] ?? doc['email']?.split('@').first ?? 'Utilisateur',
-      'email': doc['email'],
-    };
   }
 
   void _showAddMemberDialog() {
@@ -154,63 +97,17 @@ class _GroupMemberDialogState extends State<GroupMemberDialog> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
-          return Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text('Ajouter un membre', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _searchController,
-                  decoration: const InputDecoration(
-                    hintText: 'Rechercher...',
-                    prefixIcon: Icon(Icons.search),
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    setState(() => _searchQuery = value);
-                  },
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: _getFilteredUsers().length,
-                    itemBuilder: (context, index) {
-                      final user = _getFilteredUsers()[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          child: Text(user['name'][0].toUpperCase()),
-                        ),
-                        title: Text(user['name']),
-                        subtitle: Text(user['email']),
-                        trailing: ElevatedButton(
-                          onPressed: () => _addMember(user['id']),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            minimumSize: const Size(80, 35),
-                          ),
-                          child: const Text('Ajouter'),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+      builder: (context) => AddMemberBottomSheet(
+        availableUsers: _availableUsers,
+        onAddMember: _addMember,
       ),
     );
   }
 
   void _addMember(String userId) {
     context.read<GroupCubit>().addMember(widget.group.id, userId);
-    Navigator.pop(context); // Fermer le dialogue d'ajout
-    Navigator.pop(context); // Fermer le dialogue des membres
+    Navigator.pop(context); 
+    Navigator.pop(context); 
   }
 
   void _removeMember(String userId) {

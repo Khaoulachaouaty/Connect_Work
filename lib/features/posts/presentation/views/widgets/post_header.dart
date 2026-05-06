@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/widgets/user_avatar.dart';
+
 class PostHeader extends StatelessWidget {
   const PostHeader({super.key, required this.post});
 
@@ -27,30 +29,18 @@ class PostHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final authState = context.watch<AuthCubit>().state;
     final userId = authState is AuthAuthenticated ? authState.user.uid : '';
+    final isMe = post.authorId == userId;
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Row(
         children: [
-          GestureDetector(
+          UserAvatar(
+            imageUrl: post.authorAvatar,
+            name: post.authorName,
+            radius: 20,
+            showBorder: true,
             onTap: () => _startDirectChat(context, userId),
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.blue.shade50,
-              backgroundImage: post.authorAvatar.isNotEmpty
-                  ? NetworkImage(post.authorAvatar)
-                  : null,
-              child: post.authorAvatar.isEmpty
-                  ? Text(
-                      post.authorName.isNotEmpty ? post.authorName[0].toUpperCase() : 'U',
-                      style: TextStyle(
-                        color: Colors.blue.shade700,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    )
-                  : null,
-            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -59,51 +49,49 @@ class PostHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    post.authorName,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        post.authorName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                          color: Color(0xFF1E293B),
+                          letterSpacing: -0.2,
+                        ),
+                      ),
+                      if (!isMe) ...[
+                        const SizedBox(width: 6),
+                        Icon(Icons.chat_bubble_rounded, size: 12, color: Colors.blue.shade300),
+                      ],
+                    ],
                   ),
+                  const SizedBox(height: 2),
                   Text(
                     '${post.authorRole} • ${_formatTimeAgo(post.createdAt)}',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 12,
+                    style: const TextStyle(
+                      color: Color(0xFF64748B),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          if (post.authorId == userId)
-            PopupMenuButton<String>(
-              onSelected: (value) => _onMenuSelected(context, value),
-              icon: const Icon(Icons.more_horiz),
-              itemBuilder: (context) => [
-                const PopupMenuItem(
-                  value: 'edit',
-                  child: Row(
-                    children: [
-                      Icon(Icons.edit_outlined, color: Colors.blue, size: 20),
-                      SizedBox(width: 8),
-                      Text('Modifier'),
-                    ],
-                  ),
-                ),
-                const PopupMenuItem(
-                  value: 'delete',
-                  child: Row(
-                    children: [
-                      Icon(Icons.delete_outline, color: Colors.red, size: 20),
-                      SizedBox(width: 8),
-                      Text('Supprimer', style: TextStyle(color: Colors.red)),
-                    ],
-                  ),
-                ),
-              ],
+          if (isMe)
+            IconButton(
+              onPressed: () => _onMenuSelected(context, 'more'),
+              icon: const Icon(Icons.more_horiz_rounded, color: Color(0xFF94A3B8)),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
+            )
+          else
+            IconButton(
+              onPressed: () => _startDirectChat(context, userId),
+              icon: Icon(Icons.message_outlined, size: 20, color: Colors.blue.shade400),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
         ],
       ),

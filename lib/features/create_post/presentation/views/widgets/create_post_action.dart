@@ -5,6 +5,8 @@ import 'package:file_picker/file_picker.dart';
 
 import '../../../../../core/utils/app_colors.dart';
 
+import 'create_post_action_button.dart';
+
 class CreatePostActions extends StatefulWidget {
   final Function(File file, String type) onFileSelected;
 
@@ -68,60 +70,24 @@ class _CreatePostActionsState extends State<CreatePostActions> {
     }
   }
 
-  void _showPickerOptions() {
-    showModalBottomSheet(
-      context: context,
-      builder: (context) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library, color: AppColor.primaryLight),
-              title: const Text('Photo'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickImage();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.videocam, color: AppColor.accentError),
-              title: const Text('Vidéo'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickVideo();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.insert_drive_file, color: AppColor.accentSuccess),
-              title: const Text('Fichier'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickFile();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _ActionButton(
+        CreatePostActionButton(
           icon: Icons.image_rounded,
           label: 'Photo',
           color: Colors.green.shade600,
           onTap: _pickImage,
         ),
-        _ActionButton(
+        CreatePostActionButton(
           icon: Icons.videocam_rounded,
           label: 'Vidéo',
           color: Colors.red.shade600,
           onTap: _pickVideo,
         ),
-        _ActionButton(
+        CreatePostActionButton(
           icon: Icons.description_rounded,
           label: 'Fichier',
           color: Colors.blue.shade600,
@@ -131,47 +97,4 @@ class _CreatePostActionsState extends State<CreatePostActions> {
     );
   }
 }
-
-class _ActionButton extends StatelessWidget {
-  const _ActionButton({
-    required this.icon,
-    required this.label,
-    required this.color,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 6),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: color.withOpacity(0.8),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+

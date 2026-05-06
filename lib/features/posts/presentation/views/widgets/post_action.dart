@@ -20,18 +20,17 @@ class PostActions extends StatelessWidget {
     final isLiked = post.likedBy.contains(userId);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         children: [
           _ActionButton(
-            icon: isLiked ? Icons.favorite : Icons.favorite_outline,
-            iconColor: isLiked ? Colors.red : null,
+            icon: isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+            iconColor: isLiked ? const Color(0xFFEF4444) : const Color(0xFF64748B),
             count: post.likesCount.toString(),
             onTap: () async {
               if (userId.isNotEmpty) {
                 final liked = await getIt<PostService>().toggleLike(post.id, userId);
                 if (liked && post.authorId != userId) {
-                  // Envoyer notification
                   await getIt<NotificationService>().sendNotification(NotificationModel(
                     id: '',
                     userId: post.authorId,
@@ -47,12 +46,21 @@ class PostActions extends StatelessWidget {
               }
             },
           ),
+          const SizedBox(width: 24),
           _ActionButton(
-            icon: Icons.chat_bubble_outline,
+            icon: Icons.chat_bubble_outline_rounded,
+            iconColor: const Color(0xFF64748B),
             count: post.comments.toString(),
             onTap: () {
               _showComments(context);
             },
+          ),
+          const Spacer(),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.share_outlined, size: 20, color: Color(0xFF64748B)),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
           ),
         ],
       ),

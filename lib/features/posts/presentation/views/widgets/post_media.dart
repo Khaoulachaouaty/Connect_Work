@@ -12,22 +12,25 @@ class PostMedia extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 12),
-      child: switch (post.mediaType) {
-        PostMediaType.image => post.mediaUrl != null
-            ? ImageViewer(imageUrl: post.mediaUrl!)
-            : const Center(child: Text('Image non disponible')),
-        PostMediaType.video => post.mediaUrl != null
-            ? VideoPlayer(videoUrl: post.mediaUrl!)
-            : const Center(child: Text('Vidéo non disponible')),
-        PostMediaType.pdf => post.mediaUrl != null
-            ? PdfViewer(
-                pdfUrl: post.mediaUrl!,
-                fileName: post.fileName ?? 'document.pdf',
-              )
-            : const Center(child: Text('Document non disponible')),
-        PostMediaType.none => const SizedBox.shrink(),
-      },
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: switch (post.mediaType) {
+          PostMediaType.image => post.mediaUrl != null
+              ? ImageViewer(imageUrl: post.mediaUrl!)
+              : const Center(child: Text('Image non disponible')),
+          PostMediaType.video => post.mediaUrl != null
+              ? VideoPlayer(videoUrl: post.mediaUrl!)
+              : const Center(child: Text('Vidéo non disponible')),
+          PostMediaType.pdf => post.mediaUrl != null
+              ? PdfViewer(
+                  pdfUrl: post.mediaUrl!,
+                  fileName: post.fileName ?? 'document.pdf',
+                )
+              : const Center(child: Text('Document non disponible')),
+          PostMediaType.none => const SizedBox.shrink(),
+        },
+      ),
     );
   }
 }

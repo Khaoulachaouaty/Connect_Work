@@ -16,6 +16,10 @@ import 'widgets/profile_recent_posts.dart';
 import 'widgets/profile_stats.dart';
 import '../../../../core/utils/bottom_navbar.dart';
 
+import 'widgets/profile_media_grid.dart';
+import 'widgets/profile_about_section.dart';
+import '../../../../core/widgets/sliver_app_bar_delegate.dart';
+
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 
@@ -73,16 +77,21 @@ class ProfileView extends StatelessWidget {
                       ),
                       SliverPersistentHeader(
                         pinned: true,
-                        delegate: _SliverAppBarDelegate(
-                          const TabBar(
-                            labelColor: Colors.blue,
-                            unselectedLabelColor: Colors.grey,
-                            indicatorColor: Colors.blue,
-                            tabs: [
-                              Tab(text: 'Publications'),
-                              Tab(text: 'Média'),
-                              Tab(text: 'À propos'),
-                            ],
+                        delegate: SliverAppBarDelegate(
+                          minHeight: 48,
+                          maxHeight: 48,
+                          child: Container(
+                            color: Colors.white,
+                            child: const TabBar(
+                              labelColor: Colors.blue,
+                              unselectedLabelColor: Colors.grey,
+                              indicatorColor: Colors.blue,
+                              tabs: [
+                                Tab(text: 'Publications'),
+                                Tab(text: 'Média'),
+                                Tab(text: 'À propos'),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -90,8 +99,8 @@ class ProfileView extends StatelessWidget {
                     body: TabBarView(
                       children: [
                         ProfileRecentPosts(posts: userPosts),
-                        _buildMediaGrid(userPosts),
-                        _buildAboutSection(user),
+                        ProfileMediaGrid(posts: userPosts),
+                        ProfileAboutSection(user: user),
                       ],
                     ),
                   );
@@ -108,106 +117,5 @@ class ProfileView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildMediaGrid(List<Post> posts) {
-    final mediaPosts = posts.where((p) => p.mediaType != PostMediaType.none).toList();
-    if (mediaPosts.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.photo_library_outlined, size: 48, color: Colors.grey.shade300),
-            const SizedBox(height: 12),
-            Text('Aucun média partagé', style: TextStyle(color: Colors.grey.shade500)),
-          ],
-        ),
-      );
-    }
-    return GridView.builder(
-      padding: const EdgeInsets.all(8),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-      ),
-      itemCount: mediaPosts.length,
-      itemBuilder: (context, index) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Image.network(
-            mediaPosts[index].mediaUrl!,
-            fit: BoxFit.cover,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildAboutSection(UserModel user) {
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        const Text('Expérience & Rôle', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 16),
-        _buildAboutItem(Icons.work_outline, 'Rôle', user.role.toUpperCase()),
-        _buildAboutItem(Icons.business_center_outlined, 'Poste', user.function ?? 'Non renseigné'),
-        _buildAboutItem(Icons.email_outlined, 'Email', user.email),
-        const SizedBox(height: 32),
-        const Text('À propos de moi', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 16),
-        Text(
-          user.bio ?? 'Cet utilisateur n\'a pas encore ajouté de biographie.',
-          style: TextStyle(fontSize: 15, color: Colors.grey.shade700, height: 1.5),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAboutItem(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: Colors.blue.shade50, borderRadius: BorderRadius.circular(8)),
-            child: Icon(icon, size: 20, color: Colors.blue.shade700),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-              Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Colors.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }

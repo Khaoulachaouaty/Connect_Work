@@ -12,6 +12,12 @@ import '../../data/services/group_service.dart';
 import '../cubit/groups_cubit.dart';
 import 'widgets/group_card.dart';
 import 'widgets/groups_search_field.dart';
+import '../../../../core/widgets/app_empty_state.dart';
+
+import 'widgets/groups_list.dart';
+import '../../../../core/widgets/sliver_app_bar_delegate.dart';
+
+import 'widgets/create_group_dialog.dart';
 
 class GroupsView extends StatelessWidget {
   const GroupsView({super.key});
@@ -29,13 +35,8 @@ class GroupsView extends StatelessWidget {
             final isAdmin = authState is AuthAuthenticated && authState.user.role == 'admin';
             
             return Scaffold(
-              backgroundColor: const Color(0xFFF9FAFB),
-              floatingActionButton: isAdmin ? FloatingActionButton.extended(
-                onPressed: () => _showCreateGroupDialog(context),
-                backgroundColor: AppColor.primary,
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text('Créer un groupe', style: TextStyle(color: Colors.white)),
-              ) : null,
+              backgroundColor: const Color(0xFFF1F5F9),
+              floatingActionButton: isAdmin ? _buildFAB(context) : null,
               body: NestedScrollView(
                 headerSliverBuilder: (context, innerBoxIsScrolled) => [
                   SliverCustomAppBar(
@@ -45,37 +46,48 @@ class GroupsView extends StatelessWidget {
                     showLogout: true,
                     onSearchTap: () {},
                   ),
-                  SliverToBoxAdapter(
+                  const SliverToBoxAdapter(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: const GroupSearchField(),
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      child: GroupSearchField(),
                     ),
                   ),
                   SliverPersistentHeader(
                     pinned: true,
-                    delegate: _SliverAppBarDelegate(
-                      const TabBar(
-                        isScrollable: true,
-                        indicatorColor: AppColor.primary,
-                        labelColor: AppColor.primary,
-                        unselectedLabelColor: Colors.grey,
-                        labelStyle: TextStyle(fontWeight: FontWeight.bold),
-                        tabs: [
-                          Tab(text: 'Tous'),
-                          Tab(text: 'Mes Groupes'),
-                          Tab(text: 'Publics'),
-                          Tab(text: 'Privés'),
-                        ],
+                    delegate: SliverAppBarDelegate(
+                      minHeight: 48,
+                      maxHeight: 48,
+                      child: Container(
+                        color: Colors.white,
+                        child: TabBar(
+                          isScrollable: true,
+                          indicatorSize: TabBarIndicatorSize.label,
+                          indicatorPadding: const EdgeInsets.symmetric(vertical: 8),
+                          indicator: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: const Color(0xFF2563EB).withOpacity(0.1),
+                          ),
+                          labelColor: const Color(0xFF2563EB),
+                          unselectedLabelColor: const Color(0xFF64748B),
+                          labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                          tabs: const [
+                            Tab(text: 'Tous'),
+                            Tab(text: 'Mes Groupes'),
+                            Tab(text: 'Publics'),
+                            Tab(text: 'Privés'),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ],
-                body: TabBarView(
+                body: const TabBarView(
                   children: [
-                    _GroupsList(filter: 'all'),
-                    _GroupsList(filter: 'mine'),
-                    _GroupsList(filter: 'public'),
-                    _GroupsList(filter: 'private'),
+                    GroupsList(filter: 'all'),
+                    GroupsList(filter: 'mine'),
+                    GroupsList(filter: 'public'),
+                    GroupsList(filter: 'private'),
                   ],
                 ),
               ),
@@ -87,138 +99,37 @@ class GroupsView extends StatelessWidget {
     );
   }
 
-  void _showCreateGroupDialog(BuildContext context) {
-    final nameController = TextEditingController();
-    final descController = TextEditingController();
-    bool isPrivate = false;
-
-    showDialog(
-      context: context,
-      builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
-          title: const Text('Créer un nouveau groupe'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: nameController,
-                  decoration: const InputDecoration(labelText: 'Nom du groupe'),
-                ),
-                const SizedBox(height: 12),
-                TextField(
-                  controller: descController,
-                  decoration: const InputDecoration(labelText: 'Description'),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 12),
-                SwitchListTile(
-                  title: const Text('Groupe privé'),
-                  subtitle: const Text('Nécessite une approbation pour rejoindre'),
-                  value: isPrivate,
-                  onChanged: (val) => setState(() => isPrivate = val),
-                ),
-              ],
-            ),
+  Widget _buildFAB(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF2563EB), Color(0xFF3B82F6)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(30),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2563EB).withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                context.read<GroupsCubit>().createGroup(
-                  name: nameController.text,
-                  description: descController.text,
-                  imageUrl: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800', // Placeholder
-                  isPrivate: isPrivate,
-                );
-                Navigator.pop(context);
-              },
-              child: const Text('Créer'),
-            ),
-          ],
+        ],
+      ),
+      child: FloatingActionButton.extended(
+        onPressed: () => showCreateGroupDialog(context),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        icon: const Icon(Icons.add_rounded, color: Colors.white),
+        label: const Text(
+          'Créer un groupe',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 0.5,
+          ),
         ),
       ),
     );
-  }
-}
-
-class _GroupsList extends StatelessWidget {
-  final String filter;
-  const _GroupsList({required this.filter});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<GroupsCubit, GroupsState>(
-      builder: (context, state) {
-        if (state is GroupsLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is GroupsLoaded) {
-          List<Group> groups = [];
-          if (filter == 'all') {
-            groups = state.publicGroups;
-          } else if (filter == 'mine') {
-            groups = state.userGroups;
-          } else if (filter == 'public') {
-            groups = state.publicGroups.where((g) => !g.isPrivate).toList();
-          } else if (filter == 'private') {
-            groups = state.publicGroups.where((g) => g.isPrivate).toList();
-          }
-
-          if (groups.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.group_off_rounded, size: 64, color: Colors.grey.shade300),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Aucun groupe trouvé',
-                    style: TextStyle(color: Colors.grey.shade500, fontSize: 16),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: groups.length,
-            itemBuilder: (context, index) {
-              return GroupCard(group: groups[index]);
-            },
-          );
-        } else if (state is GroupsError) {
-          return Center(child: Text('Erreur: ${state.message}'));
-        }
-        return const Center(child: Text('Chargement...'));
-      },
-    );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-      color: Colors.white,
-      child: _tabBar,
-    );
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }

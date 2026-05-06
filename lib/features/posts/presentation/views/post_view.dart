@@ -7,6 +7,7 @@ import 'package:connect_work/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'widgets/post_card.dart';
+import '../../../../core/widgets/app_empty_state.dart';
 
 class PostView extends StatelessWidget {
   const PostView({super.key});
@@ -51,10 +52,11 @@ class PostView extends StatelessWidget {
 
     final posts = snapshot.data ?? [];
     if (posts.isEmpty) {
-      return const Center(child: Padding(
-        padding: EdgeInsets.all(40.0),
-        child: Text('Aucune publication pour le moment'),
-      ));
+      return const AppEmptyState(
+        title: 'Aucune publication',
+        subtitle: 'Commencez par suivre des groupes ou créez votre propre publication.',
+        icon: Icons.post_add_rounded,
+      );
     }
 
     return Column(

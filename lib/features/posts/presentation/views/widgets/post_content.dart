@@ -9,13 +9,14 @@ class PostContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       child: Text(
         content,
         style: const TextStyle(
-          fontSize: 14,
-          height: 1.4,
-          color: AppColor.textPrimary,
+          fontSize: 15,
+          height: 1.5,
+          color: Color(0xFF334155),
+          letterSpacing: 0.1,
         ),
       ),
     );

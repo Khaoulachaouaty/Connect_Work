@@ -33,16 +33,16 @@ class SliverCustomAppBar extends StatelessWidget {
       snap: true,
       pinned: true,
       elevation: 0,
-      backgroundColor: Colors.white.withOpacity(0.9),
+      backgroundColor: Colors.white.withOpacity(0.95),
       automaticallyImplyLeading: false,
       centerTitle: false,
       title: Text(
         title,
         style: const TextStyle(
-          color: Color(0xFF1F2937),
-          fontSize: 24, // Reduced from 30
-          fontWeight: FontWeight.w800,
-          letterSpacing: -0.5,
+          color: Color(0xFF0F172A),
+          fontSize: 26,
+          fontWeight: FontWeight.w900,
+          letterSpacing: -0.8,
         ),
       ),
       actions: [

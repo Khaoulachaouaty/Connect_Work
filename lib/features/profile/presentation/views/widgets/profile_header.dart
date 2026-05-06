@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../../core/utils/app_colors.dart';
 import '../../../../auth/data/models/user_model.dart';
 
+import 'profile_avatar_header.dart';
+import 'profile_info_badge.dart';
+
 class ProfileHeader extends StatelessWidget {
   final UserModel user;
 
@@ -9,62 +12,12 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const monthNames = [
-      'janvier',
-      'février',
-      'mars',
-      'avril',
-      'mai',
-      'juin',
-      'juillet',
-      'août',
-      'septembre',
-      'octobre',
-      'novembre',
-      'décembre',
-    ];
-    final memberSince = '${monthNames[user.createdAt.month - 1]} ${user.createdAt.year}';
     return Container(
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 16, left: 16, right: 16),
-            child: Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: CircleAvatar(
-                radius: 52,
-                backgroundColor: Colors.white,
-                child: CircleAvatar(
-                  radius: 48,
-                  backgroundColor: Colors.blue.shade50,
-                  backgroundImage: user.photoUrl != null && user.photoUrl!.isNotEmpty
-                      ? NetworkImage(user.photoUrl!)
-                      : null,
-                  child: user.photoUrl == null || user.photoUrl!.isEmpty
-                      ? Text(
-                          user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
-                          style: TextStyle(
-                            color: Colors.blue.shade700,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
-                      : null,
-                ),
-              ),
-            ),
-          ),
+          ProfileAvatarHeader(user: user),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -123,43 +76,17 @@ class ProfileHeader extends StatelessWidget {
                 ],
                 Row(
                   children: [
-                    _buildModernInfo(Icons.alternate_email, user.email.split('@').first),
+                    ProfileInfoBadge(icon: Icons.alternate_email, text: user.email.split('@').first),
                     const SizedBox(width: 12),
-                    _buildModernInfo(Icons.calendar_month_outlined, '${user.createdAt.year}'),
+                    ProfileInfoBadge(icon: Icons.calendar_month_outlined, text: '${user.createdAt.year}'),
                     const SizedBox(width: 12),
-                    _buildModernInfo(Icons.work_outline, user.role.toUpperCase()),
+                    ProfileInfoBadge(icon: Icons.work_outline, text: user.role.toUpperCase()),
                   ],
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildModernInfo(IconData icon, String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade100),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 16, color: Colors.grey.shade500),
-          const SizedBox(width: 6),
-          Text(
-            text,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade600,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
         ],
       ),
     );
